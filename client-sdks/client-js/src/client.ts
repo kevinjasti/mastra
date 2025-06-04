@@ -82,7 +82,11 @@ export class MastraClient extends BaseResource {
    * @returns Promise containing array of memory threads
    */
   public getMemoryThreads(params: GetMemoryThreadParams): Promise<GetMemoryThreadResponse> {
-    return this.request(`/api/memory/threads?resourceid=${params.resourceId}&agentId=${params.agentId}`);
+    // resourceId was previously sent using the deprecated `resourceid` query parameter.
+    // The server expects `resourceId`, so use the correct casing to avoid missing threads.
+    return this.request(
+      `/api/memory/threads?resourceId=${params.resourceId}&agentId=${params.agentId}`,
+    );
   }
 
   /**
