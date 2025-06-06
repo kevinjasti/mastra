@@ -317,6 +317,11 @@ export default withGT(
         permanent: true,
       },
       {
+        source: "/:locale/docs/workflows/flow-control",
+        destination: "/:locale/docs/workflows/control-flow",
+        permanent: true,
+      },
+      {
         source: "/docs/workflows/00-overview",
         destination: "/docs/workflows/overview",
         permanent: true,
@@ -324,6 +329,11 @@ export default withGT(
       {
         source: "/docs/workflows/index",
         destination: "/docs/workflows/overview",
+        permanent: true,
+      },
+      {
+        source: "/docs/voice",
+        destination: "/docs/voice/overview",
         permanent: true,
       },
       {
@@ -890,6 +900,16 @@ export default withGT(
       {
         source: "/reference/observability/create-logger",
         destination: "/reference/observability/logger",
+        permanent: true,
+      },
+      {
+        source: "/:locale/docs/workflows-vnext/overview",
+        destination: "/:locale/docs/workflows/overview",
+        permanent: true,
+      },
+      {
+        source: "/:locale/reference/rag/vector-search",
+        destination: "/:locale/examples/rag/query/hybrid-vector-search",
         permanent: true,
       },
     ],
