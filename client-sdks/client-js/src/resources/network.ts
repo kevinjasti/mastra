@@ -3,6 +3,8 @@ import type { GenerateReturn } from '@mastra/core';
 import type { JSONSchema7 } from 'json-schema';
 import { ZodSchema } from 'zod';
 import { zodToJsonSchema } from '../utils/zod-to-json-schema';
+import { parseClientRuntimeContext } from '../utils';
+import { processClientTools } from '../utils/process-client-tools';
 
 import type { GenerateParams, ClientOptions, StreamParams, GetNetworkResponse } from '../types';
 
@@ -36,6 +38,8 @@ export class Network extends BaseResource {
       ...params,
       output: zodToJsonSchema(params.output),
       experimental_output: zodToJsonSchema(params.experimental_output),
+      runtimeContext: parseClientRuntimeContext(params.runtimeContext),
+      clientTools: processClientTools(params.clientTools),
     };
 
     return this.request(`/api/networks/${this.networkId}/generate`, {
@@ -60,6 +64,8 @@ export class Network extends BaseResource {
       ...params,
       output: zodToJsonSchema(params.output),
       experimental_output: zodToJsonSchema(params.experimental_output),
+      runtimeContext: parseClientRuntimeContext(params.runtimeContext),
+      clientTools: processClientTools(params.clientTools),
     };
 
     const response: Response & {

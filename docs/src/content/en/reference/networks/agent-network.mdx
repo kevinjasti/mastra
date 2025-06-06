@@ -93,6 +93,20 @@ async stream(
 ): Promise<StreamTextResult>
 ```
 
+### Runtime context
+
+`generate()` and `stream()` accept a `runtimeContext` option. This allows you to
+provide runtime variables that can influence the agents within the network.
+
+```typescript
+const runtimeContext = new RuntimeContext<{ userId: string }>();
+runtimeContext.set('userId', '123');
+
+const result = await researchNetwork.generate('Find docs', {
+  runtimeContext,
+});
+```
+
 ### getRoutingAgent()
 
 Returns the routing agent used by the network.
