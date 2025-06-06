@@ -159,6 +159,29 @@ describe('Network Handlers', () => {
 
       expect(result).toEqual(mockResult);
     });
+
+    it('should merge runtime context from request body', async () => {
+      const generateSpy = vi.spyOn(mockNetwork, 'generate').mockResolvedValue({} as any);
+      const rc = new RuntimeContext();
+      rc.set('a', 1);
+
+      await generateHandler({
+        mastra: mockMastra,
+        networkId: 'test-network',
+        body: {
+          messages: ['hi'],
+          resourceId: 'r',
+          threadId: 't',
+          experimental_output: undefined,
+          runtimeContext: { b: 2 },
+        },
+        runtimeContext: rc,
+      });
+
+      const passed = generateSpy.mock.calls[0][1].runtimeContext as RuntimeContext;
+      expect(passed.get('a')).toBe(1);
+      expect(passed.get('b')).toBe(2);
+    });
   });
 
   describe('streamGenerateHandler', () => {
@@ -234,6 +257,34 @@ describe('Network Handlers', () => {
       });
 
       expect(result).toEqual(mockStreamResult);
+    });
+
+    it('should merge runtime context from request body when streaming', async () => {
+      const streamSpy = vi.spyOn(mockNetwork, 'stream').mockResolvedValue({
+        toDataStreamResponse: vi.fn(),
+      } as any);
+
+      const rc = new RuntimeContext();
+      rc.set('x', 'y');
+
+      const mockMessages = ['test message'];
+
+      await streamGenerateHandler({
+        mastra: mockMastra,
+        networkId: 'test-network',
+        body: {
+          messages: mockMessages,
+          resourceId: 'r',
+          threadId: 't',
+          experimental_output: undefined,
+          runtimeContext: { foo: 'bar' },
+        },
+        runtimeContext: rc,
+      });
+
+      const passed = streamSpy.mock.calls[0][1].runtimeContext as RuntimeContext;
+      expect(passed.get('x')).toBe('y');
+      expect(passed.get('foo')).toBe('bar');
     });
   });
 });

@@ -115,8 +115,15 @@ export async function generateHandler({
 
     validateBody({ messages: body.messages });
 
-    const { messages, ...rest } = body;
-    const result = await network.generate(messages!, { ...rest, runtimeContext });
+    const { messages, runtimeContext: runtimeContextFromRequest, ...rest } = body;
+    const finalRuntimeContext = new RuntimeContext<Record<string, unknown>>([
+      ...Array.from(runtimeContext.entries()),
+      ...Array.from(Object.entries(runtimeContextFromRequest ?? {})),
+    ]);
+    const result = await network.generate(messages!, {
+      ...rest,
+      runtimeContext: finalRuntimeContext,
+    });
 
     return result;
   } catch (error) {
@@ -142,11 +149,15 @@ export async function streamGenerateHandler({
 
     validateBody({ messages: body.messages });
 
-    const { messages, output, ...rest } = body;
+    const { messages, output, runtimeContext: runtimeContextFromRequest, ...rest } = body;
+    const finalRuntimeContext = new RuntimeContext<Record<string, unknown>>([
+      ...Array.from(runtimeContext.entries()),
+      ...Array.from(Object.entries(runtimeContextFromRequest ?? {})),
+    ]);
     const streamResult = await network.stream(messages!, {
       output: output as any,
       ...rest,
-      runtimeContext,
+      runtimeContext: finalRuntimeContext,
     });
 
     const streamResponse = output
